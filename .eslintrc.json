@@ -1,0 +1,16 @@
+{
+  "extends": "@rocketseat/eslint-config/node",
+  "rules": {
+    "no-useless-constructor": "off",
+    "prettier/prettier": ["error", {
+      "printWidth": 80,
+      "tabWidth": 2,
+      "endOfLine": "auto",
+      "singleQuote": true,
+      "trailingComma": "all",
+      "arrowParens": "always",
+      // "arrowParens": "avoid",
+      "semi": true // PARA COLOCAR O ; NO FINAL, EM INGLÊS semicolon
+    }]
+  }
+}
