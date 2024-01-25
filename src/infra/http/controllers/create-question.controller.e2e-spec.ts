@@ -2,15 +2,19 @@ import { INestApplication } from '@nestjs/common';
 
 import { Test } from '@nestjs/testing';
 
-import { AppModule } from '@/app.module';
-
-import request from 'supertest';
-import { PrismaService } from '@/prisma/prima.service';
 import { hash } from 'bcryptjs';
 
-describe('Authenticate (E2E)', () => {
+import request from 'supertest';
+
+import { AppModule } from '@/infra/app.module';
+
+import { PrismaService } from '@/infra/prisma/prima.service';
+import { JwtService } from '@nestjs/jwt';
+
+describe('Create question (E2E)', () => {
   let app: INestApplication;
   let prismaService: PrismaService;
+  let jwtService: JwtService;
 
   /**
    * Para testar, precisamos subir a aplicação.
@@ -31,11 +35,14 @@ describe('Authenticate (E2E)', () => {
     // PEGANDO O SERVIÇO DO PRISMA
     prismaService = moduleRef.get(PrismaService);
 
+    // PEGANDO O JWT
+    jwtService = moduleRef.get(JwtService);
+
     await app.init();
   });
 
-  test('[POST] /sessions', async () => {
-    await prismaService.user.create({
+  test('[POST] /questions', async () => {
+    const user = await prismaService.user.create({
       data: {
         name: 'John Doe',
         email: 'johndoe@example.com',
@@ -43,14 +50,25 @@ describe('Authenticate (E2E)', () => {
       },
     });
 
-    const response = await request(app.getHttpServer()).post('/sessions').send({
-      email: 'johndoe@example.com',
-      password: '123456',
-    });
+    const accessToken = jwtService.sign({ sub: user.id });
+
+    const response = await request(app.getHttpServer())
+      .post('/questions')
+      // enviando o token
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        title: 'New question',
+        content: 'Question content',
+      });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toEqual({
-      access_token: expect.any(String),
+
+    const questionOnDataBase = await prismaService.question.findFirst({
+      where: {
+        title: 'New question',
+      },
     });
+
+    expect(questionOnDataBase).toBeTruthy();
   });
 });

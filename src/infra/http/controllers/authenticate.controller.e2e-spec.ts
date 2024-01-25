@@ -2,12 +2,13 @@ import { INestApplication } from '@nestjs/common';
 
 import { Test } from '@nestjs/testing';
 
-import { AppModule } from '@/app.module';
+import { AppModule } from '@/infra/app.module';
 
 import request from 'supertest';
-import { PrismaService } from '@/prisma/prima.service';
+import { PrismaService } from '@/infra/prisma/prima.service';
+import { hash } from 'bcryptjs';
 
-describe('Create account (E2E)', () => {
+describe('Authenticate (E2E)', () => {
   let app: INestApplication;
   let prismaService: PrismaService;
 
@@ -16,7 +17,7 @@ describe('Create account (E2E)', () => {
    * Mas não queremos subir usando o script de start
    * O "createTestingModule" é uma forma de subir a
    * aplicação de uma maneira que funcione de forma
-   * programática
+   * programátiva
    */
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -33,21 +34,23 @@ describe('Create account (E2E)', () => {
     await app.init();
   });
 
-  test('[POST] /accounts', async () => {
-    const response = await request(app.getHttpServer()).post('/accounts').send({
-      name: 'John Doe',
+  test('[POST] /sessions', async () => {
+    await prismaService.user.create({
+      data: {
+        name: 'John Doe',
+        email: 'johndoe@example.com',
+        password: await hash('123456', 8),
+      },
+    });
+
+    const response = await request(app.getHttpServer()).post('/sessions').send({
       email: 'johndoe@example.com',
       password: '123456',
     });
 
     expect(response.statusCode).toBe(201);
-
-    const userOnDataBase = await prismaService.user.findUnique({
-      where: {
-        email: 'johndoe@example.com',
-      },
+    expect(response.body).toEqual({
+      access_token: expect.any(String),
     });
-
-    expect(userOnDataBase).toBeTruthy();
   });
 });

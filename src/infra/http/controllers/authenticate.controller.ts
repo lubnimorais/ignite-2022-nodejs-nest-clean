@@ -11,9 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 
 import { compare } from 'bcryptjs';
 
-import { ZodValidationPipe } from '@/pipes/zod-validation-pipe';
+import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
-import { PrismaService } from '@/prisma/prima.service';
+import { PrismaService } from '@/infra/prisma/prima.service';
 
 import { z as zod } from 'zod';
 

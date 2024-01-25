@@ -11,9 +11,9 @@ import { hash } from 'bcryptjs';
 
 import { z as zod } from 'zod';
 
-import { ZodValidationPipe } from '@/pipes/zod-validation-pipe';
+import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
-import { PrismaService } from '@/prisma/prima.service';
+import { PrismaService } from '@/infra/prisma/prima.service';
 
 const createAccountBodySchema = zod.object({
   name: zod.string(),
