@@ -8,7 +8,7 @@ import request from 'supertest';
 
 import { AppModule } from '@/infra/app.module';
 
-import { PrismaService } from '@/infra/prisma/prima.service';
+import { PrismaService } from '@/infra/database/prisma/prima.service';
 import { JwtService } from '@nestjs/jwt';
 
 describe('Fetch recent questions (E2E)', () => {

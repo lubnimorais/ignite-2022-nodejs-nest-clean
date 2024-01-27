@@ -13,7 +13,7 @@ import { compare } from 'bcryptjs';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
-import { PrismaService } from '@/infra/prisma/prima.service';
+import { PrismaService } from '@/infra/database/prisma/prima.service';
 
 import { z as zod } from 'zod';
 

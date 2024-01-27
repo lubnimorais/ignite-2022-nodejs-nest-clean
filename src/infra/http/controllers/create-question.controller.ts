@@ -4,7 +4,7 @@ import { z as zod } from 'zod';
 
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 
-import { PrismaService } from '@/infra/prisma/prima.service';
+import { PrismaService } from '@/infra/database/prisma/prima.service';
 
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
 

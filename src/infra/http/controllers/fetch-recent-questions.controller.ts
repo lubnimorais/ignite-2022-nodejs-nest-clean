@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
-import { PrismaService } from '@/infra/prisma/prima.service';
+import { PrismaService } from '@/infra/database/prisma/prima.service';
 
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
