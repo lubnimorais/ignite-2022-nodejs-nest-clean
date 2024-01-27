@@ -4,7 +4,7 @@ import { z as zod } from 'zod';
 
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 
-import { PrismaService } from '@/infra/database/prisma/prima.service';
+import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question';
 
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
 
@@ -24,7 +24,7 @@ type CreateQuestionBodySchema = zod.infer<typeof createQuestionBodySchema>;
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
 export class CreateQuestionController {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private createQuestionUseCase: CreateQuestionUseCase) {}
 
   @Post()
   async handle(
@@ -34,26 +34,11 @@ export class CreateQuestionController {
     const { title, content } = body;
     const userId = userPayload.sub;
 
-    const slug = this.convertToSlug(title);
-
-    const question = await this.prismaService.question.create({
-      data: {
-        title,
-        content,
-        slug,
-        authorId: userId,
-      },
+    await this.createQuestionUseCase.execute({
+      title,
+      content,
+      authorId: userId,
+      attachmentsIds: [],
     });
-
-    return { question };
-  }
-
-  private convertToSlug(title: string): string {
-    return title
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\w\s-]/g, '') // remove non-alphanumeric characters except hyphen
-      .replace(/\s+/g, '-'); // replace whitespace with hyphens
   }
 }
