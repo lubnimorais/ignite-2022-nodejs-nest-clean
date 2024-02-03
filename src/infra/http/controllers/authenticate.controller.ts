@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpCode,
@@ -7,15 +8,11 @@ import {
   UsePipes,
 } from '@nestjs/common';
 
-import { JwtService } from '@nestjs/jwt';
-
-import { compare } from 'bcryptjs';
-
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
-import { PrismaService } from '@/infra/database/prisma/prima.service';
-
 import { z as zod } from 'zod';
+import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student';
+import { WrongCredentialsError } from '@/domain/forum/application/use-cases/errors/wrong-credentials-error';
 
 const authenticateBodySchema = zod.object({
   email: zod.string().email(),
@@ -26,10 +23,7 @@ type AuthenticateRequest = zod.infer<typeof authenticateBodySchema>;
 
 @Controller('/sessions')
 export class AuthenticateController {
-  constructor(
-    private jwtService: JwtService,
-    private prismaService: PrismaService,
-  ) {}
+  constructor(private authenticateStudentUseCase: AuthenticateStudentUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -37,23 +31,23 @@ export class AuthenticateController {
   async handle(@Body() body: AuthenticateRequest) {
     const { email, password } = body;
 
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
+    const result = await this.authenticateStudentUseCase.execute({
+      email,
+      password,
     });
 
-    if (!user) {
-      throw new UnauthorizedException('User credentials do not match.');
+    if (result.isLeft()) {
+      const error = result.value;
+
+      switch (error.constructor) {
+        case WrongCredentialsError:
+          throw new UnauthorizedException(error.message);
+        default:
+          throw new BadRequestException(error.message);
+      }
     }
 
-    const isPasswordValid = await compare(password, user.password);
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('User credentials do not match.');
-    }
-
-    const accessToken = this.jwtService.sign({ sub: user.id });
+    const { accessToken } = result.value;
 
     return {
       access_token: accessToken,

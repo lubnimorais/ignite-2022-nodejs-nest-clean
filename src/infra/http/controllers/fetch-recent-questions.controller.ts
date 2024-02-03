@@ -1,4 +1,10 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 
 import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions';
 
@@ -30,7 +36,7 @@ export class FetchRecentQuestionController {
     const result = await this.fetchRecentQuestionsUseCase.execute({ page });
 
     if (result.isLeft()) {
-      throw new Error();
+      throw new BadRequestException();
     }
 
     const { questions } = result.value;
