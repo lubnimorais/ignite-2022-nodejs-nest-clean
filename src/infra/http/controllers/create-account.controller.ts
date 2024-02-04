@@ -10,6 +10,8 @@ import {
 
 import { z as zod } from 'zod';
 
+import { Public } from '@/infra/auth/public';
+
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
 import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student';
@@ -24,6 +26,7 @@ const createAccountBodySchema = zod.object({
 type CreateAccountRequest = zod.infer<typeof createAccountBodySchema>;
 
 @Controller('/accounts')
+@Public()
 export class CreateAccountController {
   constructor(private registerStudentUseCase: RegisterStudentUseCase) {}
 

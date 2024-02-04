@@ -8,6 +8,8 @@ import {
   UsePipes,
 } from '@nestjs/common';
 
+import { Public } from '@/infra/auth/public';
+
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
 import { z as zod } from 'zod';
@@ -22,6 +24,7 @@ const authenticateBodySchema = zod.object({
 type AuthenticateRequest = zod.infer<typeof authenticateBodySchema>;
 
 @Controller('/sessions')
+@Public()
 export class AuthenticateController {
   constructor(private authenticateStudentUseCase: AuthenticateStudentUseCase) {}
 

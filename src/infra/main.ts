@@ -1,17 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
-import { Env } from './env';
-
-import { ConfigService } from '@nestjs/config';
+import { EnvService } from './env/env.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const configService: ConfigService<Env, true> = app.get(ConfigService);
+  const envService = app.get(EnvService);
 
   // NOME DA VARIÁVEL AMBIENTE
-  const port = configService.get('PORT', { infer: true });
+  const port = envService.get('PORT');
 
   await app.listen(port);
 }
