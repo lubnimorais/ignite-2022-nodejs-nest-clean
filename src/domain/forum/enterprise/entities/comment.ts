@@ -5,7 +5,7 @@ interface CommentProps {
   authorId: UniqueEntityId;
   content: string;
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt?: Date | null;
 }
 
 abstract class Comment<Props extends CommentProps> extends Entity<Props> {
