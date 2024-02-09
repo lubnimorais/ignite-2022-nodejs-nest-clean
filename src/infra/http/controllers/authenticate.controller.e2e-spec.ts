@@ -2,15 +2,19 @@ import { INestApplication } from '@nestjs/common';
 
 import { Test } from '@nestjs/testing';
 
+import request from 'supertest';
+
+import { hash } from 'bcryptjs';
+
 import { AppModule } from '@/infra/app.module';
 
-import request from 'supertest';
-import { PrismaService } from '@/infra/database/prisma/prima.service';
-import { hash } from 'bcryptjs';
+import { StudentFactory } from 'test/factories/make-student';
+import { DatabaseModule } from '@/infra/database/database.module';
 
 describe('Authenticate (E2E)', () => {
   let app: INestApplication;
-  let prismaService: PrismaService;
+  // let prismaService: PrismaService;
+  let studentFactory: StudentFactory;
 
   /**
    * Para testar, precisamos subir a aplicação.
@@ -21,7 +25,8 @@ describe('Authenticate (E2E)', () => {
    */
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [StudentFactory],
     })
       // .overrideProvider(CatsService) -> para fazer mocking
       .compile();
@@ -29,18 +34,17 @@ describe('Authenticate (E2E)', () => {
     app = moduleRef.createNestApplication();
 
     // PEGANDO O SERVIÇO DO PRISMA
-    prismaService = moduleRef.get(PrismaService);
+    // prismaService = moduleRef.get(PrismaService);
+
+    studentFactory = moduleRef.get(StudentFactory);
 
     await app.init();
   });
 
   test('[POST] /sessions', async () => {
-    await prismaService.user.create({
-      data: {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        password: await hash('123456', 8),
-      },
+    await studentFactory.makePrismaStudent({
+      email: 'johndoe@example.com',
+      password: await hash('123456', 8),
     });
 
     const response = await request(app.getHttpServer()).post('/sessions').send({

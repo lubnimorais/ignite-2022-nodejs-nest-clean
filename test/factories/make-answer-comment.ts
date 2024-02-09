@@ -3,9 +3,12 @@ import {
   AnswerComment,
   AnswerCommentProps,
 } from '@/domain/forum/enterprise/entities/answer-comment';
+import { PrismaAnswerCommentMapper } from '@/infra/database/prisma/mappers/prisma-answer-comment-mapper';
+import { PrismaService } from '@/infra/database/prisma/prima.service';
 import { faker } from '@faker-js/faker';
+import { Injectable } from '@nestjs/common';
 
-function makeAnswerComment(
+export function makeAnswerComment(
   override: Partial<AnswerCommentProps> = {},
   id?: UniqueEntityId,
 ) {
@@ -22,4 +25,19 @@ function makeAnswerComment(
   return answerComment;
 }
 
-export { makeAnswerComment };
+@Injectable()
+export class AnswerCommentFactory {
+  constructor(private prismaService: PrismaService) {}
+
+  async makePrismaAnswerComment(
+    data: Partial<AnswerCommentProps> = {},
+  ): Promise<AnswerComment> {
+    const answerComment = makeAnswerComment(data);
+
+    await this.prismaService.comment.create({
+      data: PrismaAnswerCommentMapper.toPrisma(answerComment),
+    });
+
+    return answerComment;
+  }
+}

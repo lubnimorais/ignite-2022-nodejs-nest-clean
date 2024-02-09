@@ -8,8 +8,11 @@ import {
 } from '@/domain/forum/enterprise/entities/question';
 
 import { Slug } from '@/domain/forum/enterprise/entities/values-objects/slug';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/infra/database/prisma/prima.service';
+import { PrismaQuestionMapper } from '@/infra/database/prisma/mappers/prisma-question-mapper';
 
-function makeQuestion(
+export function makeQuestion(
   override: Partial<QuestionProps> = {},
   id?: UniqueEntityId,
 ) {
@@ -27,4 +30,19 @@ function makeQuestion(
   return question;
 }
 
-export { makeQuestion };
+@Injectable()
+export class QuestionFactory {
+  constructor(private prismaService: PrismaService) {}
+
+  async makePrismaQuestion(
+    data: Partial<QuestionProps> = {},
+  ): Promise<Question> {
+    const question = makeQuestion(data);
+
+    await this.prismaService.question.create({
+      data: PrismaQuestionMapper.toPrisma(question),
+    });
+
+    return question;
+  }
+}
