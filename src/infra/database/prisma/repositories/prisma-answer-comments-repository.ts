@@ -40,7 +40,7 @@ export class PrismaAnswerCommentsRepository
   ): Promise<AnswerComment[]> {
     const answerComments = await this.prismaService.comment.findMany({
       where: {
-        id: answerId,
+        answerId,
       },
       orderBy: {
         createdAt: 'desc',
