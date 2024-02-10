@@ -69,8 +69,6 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
       },
       data,
     });
-
-    throw new Error('Method not implemented.');
   }
 
   async delete(question: Question): Promise<void> {

@@ -10,11 +10,13 @@ import { PrismaService } from '@/infra/database/prisma/prima.service';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/infra/database/database.module';
 import { StudentFactory } from 'test/factories/make-student';
+import { QuestionFactory } from 'test/factories/make-question';
 
-describe('Create question (E2E)', () => {
+describe('Edit question (E2E)', () => {
   let app: INestApplication;
   let prismaService: PrismaService;
   let studentFactory: StudentFactory;
+  let questionFactory: QuestionFactory;
   let jwtService: JwtService;
 
   /**
@@ -27,7 +29,7 @@ describe('Create question (E2E)', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory],
+      providers: [StudentFactory, QuestionFactory],
     })
       // .overrideProvider(CatsService) -> para fazer mocking
       .compile();
@@ -39,31 +41,40 @@ describe('Create question (E2E)', () => {
 
     studentFactory = moduleRef.get(StudentFactory);
 
+    questionFactory = moduleRef.get(QuestionFactory);
+
     // PEGANDO O JWT
     jwtService = moduleRef.get(JwtService);
 
     await app.init();
   });
 
-  test('[POST] /questions', async () => {
+  test('[PUT] /questions/:id', async () => {
     const user = await studentFactory.makePrismaStudent();
 
     const accessToken = jwtService.sign({ sub: user.id.toString() });
 
+    const question = await questionFactory.makePrismaQuestion({
+      authorId: user.id,
+    });
+
+    const questionId = question.id.toString();
+
     const response = await request(app.getHttpServer())
-      .post('/questions')
+      .put(`/questions/${questionId}`)
       // enviando o token
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        title: 'New question',
-        content: 'Question content',
+        title: 'New title',
+        content: 'New content',
       });
 
-    expect(response.statusCode).toBe(201);
+    expect(response.statusCode).toBe(204);
 
     const questionOnDataBase = await prismaService.question.findFirst({
       where: {
-        title: 'New question',
+        title: 'New title',
+        content: 'New content',
       },
     });
 

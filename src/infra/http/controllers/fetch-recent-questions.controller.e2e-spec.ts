@@ -74,6 +74,11 @@ describe('Fetch recent questions (E2E)', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
+      /**
+       * Como queremos só chegar se existem e
+       * não necessariamente a ordem importa
+       * muito,usamos o expect.arrayContaining
+       */
       questions: expect.arrayContaining([
         expect.objectContaining({ title: 'Question 01' }),
         expect.objectContaining({ title: 'Question 02' }),
