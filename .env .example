@@ -5,3 +5,14 @@
 # See the documentation for all the connection string options: https://pris.ly/d/connection-strings
 
 DATABASE_URL="postgresql://USER:PASSWORD@localhost:PORT/DATABASE?schema=public"
+
+# Auth
+JWT_PRIVATE_KEY=""
+JWT_PUBLIC_KEY=""
+
+# Upload (AWS / Cloudflare)
+CLOUDFLARE_ACCOUNT_ID=
+
+AWS_BUCKET_NAME=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_ID=
