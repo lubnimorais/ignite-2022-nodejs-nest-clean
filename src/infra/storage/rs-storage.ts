@@ -19,7 +19,7 @@ export class R2Storage implements Uploader {
     const accountId = envService.get('CLOUDFLARE_ACCOUNT_ID');
 
     this.client = new S3Client({
-      endpoint: `${accountId}`,
+      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       region: 'auto', // CLOUDEFLARE PEDE PARA DEIXAR AUTO
       credentials: {
         accessKeyId: envService.get('AWS_ACCESS_KEY_ID'),
