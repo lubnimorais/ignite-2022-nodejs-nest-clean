@@ -13,6 +13,7 @@ import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 const createQuestionBodySchema = zod.object({
   title: zod.string(),
   content: zod.string(),
+  attachments: zod.array(zod.string().uuid()),
 });
 
 const bodyValidationPipe = new ZodValidationPipe(createQuestionBodySchema);
@@ -28,14 +29,14 @@ export class CreateQuestionController {
     @Body(bodyValidationPipe) body: CreateQuestionBodySchema,
     @CurrentUser() userPayload: UserPayload,
   ) {
-    const { title, content } = body;
+    const { title, content, attachments } = body;
     const userId = userPayload.sub;
 
     const result = await this.createQuestionUseCase.execute({
       title,
       content,
       authorId: userId,
-      attachmentsIds: [],
+      attachmentsIds: attachments,
     });
 
     if (result.isLeft()) {
