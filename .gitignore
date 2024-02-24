@@ -39,3 +39,8 @@ lerna-debug.log*
 
 # Docker
 data/
+
+# Lock
+yarn.Lock
+package-lock.json
+pnpm-lock.yaml
