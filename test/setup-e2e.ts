@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
 
 import { URL } from 'url';
 
@@ -7,6 +7,9 @@ import { randomUUID } from 'node:crypto';
 import { execSync } from 'child_process';
 
 import { PrismaClient } from '@prisma/client';
+
+config({ path: '.env', override: true });
+config({ path: '.env.test', override: true });
 
 const prismaClient = new PrismaClient();
 
