@@ -17,6 +17,7 @@ import { UserPayload } from '@/infra/auth/jwt.strategy';
 const editQuestionBodySchema = zod.object({
   title: zod.string(),
   content: zod.string(),
+  attachments: zod.array(zod.string().uuid()),
 });
 
 const bodyValidationPipe = new ZodValidationPipe(editQuestionBodySchema);
@@ -34,14 +35,14 @@ export class EditQuestionController {
     @Param('id') questionId: string,
     @CurrentUser() user: UserPayload,
   ) {
-    const { title, content } = body;
+    const { title, content, attachments } = body;
     const userId = user.sub;
 
     const result = await this.editQuestionUseCase.execute({
       title,
       content,
       authorId: userId,
-      attachmentsIds: [],
+      attachmentsIds: attachments,
       questionId,
     });
 

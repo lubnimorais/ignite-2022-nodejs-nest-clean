@@ -78,9 +78,11 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
         },
         data,
       }),
+
       this.prismaQuestionAttachmentsRepository.createMany(
         question.attachments.getNewItems(),
       ),
+
       this.prismaQuestionAttachmentsRepository.deleteMany(
         question.attachments.getRemovedItems(),
       ),
