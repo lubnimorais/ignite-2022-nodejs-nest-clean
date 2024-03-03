@@ -1,4 +1,4 @@
-import { FetchQuestionCommentsUseCase } from './fecth-question-comments';
+import { FetchQuestionCommentsUseCase } from './fetch-question-comments';
 
 import { InMemoryQuestionCommentsRepository } from 'test/repositories/in-memory-question-comments-repository';
 import { makeQuestionComment } from 'test/factories/make-question-comment';

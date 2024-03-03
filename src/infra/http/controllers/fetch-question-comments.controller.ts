@@ -10,7 +10,7 @@ import { z as zod } from 'zod';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
-import { FetchQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/fecth-question-comments';
+import { FetchQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-question-comments';
 import { CommentPresenter } from '../presenters/comment-presenter';
 
 const pageQueryParamSchema = zod

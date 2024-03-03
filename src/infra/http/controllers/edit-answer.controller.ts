@@ -16,6 +16,7 @@ import { UserPayload } from '@/infra/auth/jwt.strategy';
 
 const editAnswerBodySchema = zod.object({
   content: zod.string(),
+  attachments: zod.array(zod.string().uuid()).default([]),
 });
 
 const bodyValidationPipe = new ZodValidationPipe(editAnswerBodySchema);
@@ -33,14 +34,14 @@ export class EditAnswerController {
     @Param('id') answerId: string,
     @CurrentUser() user: UserPayload,
   ) {
-    const { content } = body;
+    const { content, attachments } = body;
     const userId = user.sub;
 
     const result = await this.editAnswerUseCase.execute({
       authorId: userId,
       answerId,
       content,
-      attachmentsIds: [],
+      attachmentsIds: attachments,
     });
 
     if (result.isLeft()) {

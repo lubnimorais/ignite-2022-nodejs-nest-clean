@@ -38,7 +38,7 @@ import { CommentAnswerUseCase } from '@/domain/forum/application/use-cases/comme
 import { DeleteAnswerCommentController } from './controllers/delete-answer-commment.controller';
 import { DeleteAnswerCommentUseCase } from '@/domain/forum/application/use-cases/delete-answer-comment';
 import { FetchQuestionCommentsController } from './controllers/fetch-question-comments.controller';
-import { FetchQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/fecth-question-comments';
+import { FetchQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-question-comments';
 import { FetchAnswerCommentsController } from './controllers/fetch-answer-comments.controller';
 import { FetchAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/fecth-answer-comments';
 import { UploadAttachmentController } from './controllers/upload-attachment.controller';
