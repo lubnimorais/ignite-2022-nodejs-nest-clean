@@ -14,8 +14,12 @@ import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memo
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository';
 import { makeQuestion } from 'test/factories/make-question';
 import { waitFor } from 'test/utils/wait-for';
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachment-repository';
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository';
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository;
+let inMemoryStudentsRepository: InMemoryStudentsRepository;
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
@@ -32,8 +36,14 @@ describe('On Answer Created', () => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentsRepository();
 
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository();
+
+    inMemoryStudentsRepository = new InMemoryStudentsRepository();
+
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryStudentsRepository,
     );
 
     inMemoryAnswerAttachmentsRepository =

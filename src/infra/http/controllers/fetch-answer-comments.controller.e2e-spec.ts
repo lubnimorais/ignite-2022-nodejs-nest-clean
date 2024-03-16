@@ -83,7 +83,7 @@ describe('Fetch answer comments (E2E)', () => {
           authorName: 'John Doe',
         }),
         expect.objectContaining({
-          content: 'Comment 01',
+          content: 'Comment 02',
           authorName: 'John Doe',
         }),
       ]),

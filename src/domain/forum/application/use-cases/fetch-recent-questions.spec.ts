@@ -4,8 +4,12 @@ import { FetchRecentQuestionsUseCase } from './fetch-recent-questions';
 
 import { makeQuestion } from 'test/factories/make-question';
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachment-repository';
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository';
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository;
+let inMemoryStudentsRepository: InMemoryStudentsRepository;
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 
 let sut: FetchRecentQuestionsUseCase;
@@ -17,8 +21,14 @@ describe('Fetch recent questions', () => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentsRepository();
 
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository();
+
+    inMemoryStudentsRepository = new InMemoryStudentsRepository();
+
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryStudentsRepository,
     );
 
     sut = new FetchRecentQuestionsUseCase(inMemoryQuestionsRepository);

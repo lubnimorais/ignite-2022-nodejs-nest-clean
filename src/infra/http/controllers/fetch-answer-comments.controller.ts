@@ -10,11 +10,8 @@ import { z as zod } from 'zod';
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
 
-import { FetchAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/fecth-answer-comments';
-import {
-  CommentPresenter,
-  CommentWithAuthorPresenter,
-} from '../presenters/comment-with-author-presenter';
+import { FetchAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-answer-comments';
+import { CommentWithAuthorPresenter } from '../presenters/comment-with-author-presenter';
 
 const pageQueryParamSchema = zod
   .string()
@@ -45,8 +42,8 @@ export class FetchAnswerCommentsController {
       throw new BadRequestException();
     }
 
-    const { answerComments } = result.value;
+    const { comments } = result.value;
 
-    return { comments: answerComments.map(CommentWithAuthorPresenter.toHTTP) };
+    return { comments: comments.map(CommentWithAuthorPresenter.toHTTP) };
   }
 }
