@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { execSync } from 'child_process';
 
 import { PrismaClient } from '@prisma/client';
+import { DomainEvents } from '@/core/events/domain-events';
 
 config({ path: '.env', override: true });
 config({ path: '.env.test', override: true });
@@ -44,6 +45,8 @@ beforeAll(async () => {
    * Pegando a nova URL do banco de dados
    */
   const database = generateUniqueDatabaseURL(schemaId);
+
+  DomainEvents.shouldRun = false;
 
   /**
    * Sobrescrever a DATABASE_URL com a nova URL

@@ -1,6 +1,6 @@
 import { Either, left, right } from '@/core/either';
 import { Notification } from '../../enterprise/entities/notification';
-import { INotificationsRepository } from '../repositories/notifications-repository';
+import { NotificationsRepository } from '../repositories/notifications-repository';
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error';
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error';
 
@@ -17,7 +17,7 @@ type ReadNotificationUseCaseResponse = Either<
 >;
 
 class ReadNotificationUseCase {
-  constructor(private notificationsRepository: INotificationsRepository) {}
+  constructor(private notificationsRepository: NotificationsRepository) {}
 
   async execute({
     recipientId,

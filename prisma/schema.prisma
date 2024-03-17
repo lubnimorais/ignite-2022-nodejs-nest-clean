@@ -23,9 +23,10 @@ model User {
   role     UserRole @default(STUDENT)
 
   // RELATIONS
-  questions Question[]
-  answers   Answer[]
-  comments  Comment[]
+  questions     Question[]
+  answers       Answer[]
+  comments      Comment[]
+  notifications Notification[]
 
   @@map("users")
 }
@@ -97,4 +98,18 @@ model Attachment {
   answer   Answer?   @relation(fields: [answerId], references: [id])
 
   @@map("attachments")
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  title       String
+  content     String
+  readAt      DateTime? @map("read_at")
+  recipientId String    @map("recipient_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // RELATIONS
+  recipient User @relation(fields: [recipientId], references: [id])
+
+  @@map("notifications")
 }

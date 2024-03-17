@@ -1,8 +1,8 @@
 import { Notification } from '@/domain/notification/enterprise/entities/notification';
 
-import { INotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository';
+import { NotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository';
 
-class InMemoryNotificationsRepository implements INotificationsRepository {
+class InMemoryNotificationsRepository implements NotificationsRepository {
   public items: Notification[] = [];
 
   async create(notification: Notification): Promise<void> {
