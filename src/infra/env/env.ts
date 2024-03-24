@@ -9,6 +9,9 @@ export const envSchema = zod.object({
   AWS_BUCKET_NAME: zod.string(),
   AWS_ACCESS_KEY_ID: zod.string(),
   AWS_SECRET_ACCESS_ID: zod.string(),
+  REDIS_HOST: zod.string().optional().default('127.0.0.1'),
+  REDIS_PORT: zod.coerce.number().default(6379),
+  REDIS_DB: zod.coerce.number().default(0),
 });
 
 export type Env = zod.infer<typeof envSchema>;

@@ -16,3 +16,11 @@ services:
     # da aplicação e assim possamos recriar o container com os dados. 
     volumes:
       - ./data/pg:/data/postgres
+  
+  cache: 
+    container_name: nest-clean-cache
+    image: redis # boa para desenvolvimento, mas não para produção (usar bitname/redis)
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data/redis:/data 

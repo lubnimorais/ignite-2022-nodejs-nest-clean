@@ -9,11 +9,13 @@ import { QuestionAttachmentsRepository } from '@/domain/forum/application/reposi
 import { QuestionDetails } from '@/domain/forum/enterprise/entities/values-objects/question-details';
 import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper';
 import { DomainEvents } from '@/core/events/domain-events';
+import { CacheRepository } from '@/infra/cache/cache-repository';
 
 @Injectable()
 export class PrismaQuestionsRepository implements QuestionsRepository {
   constructor(
     private prismaService: PrismaService,
+    private cacheRepository: CacheRepository,
     private prismaQuestionAttachmentsRepository: QuestionAttachmentsRepository,
   ) {}
 
@@ -46,6 +48,16 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
   }
 
   async findDetailsBySlug(slug: string): Promise<QuestionDetails | null> {
+    // CONSULTA PARA VER SE TEM CACHE ARMAZENADO
+    const cacheHit = await this.cacheRepository.get(`question:${slug}:details`);
+
+    // SE TIVER RETORNA
+    if (cacheHit) {
+      const cashedData = JSON.parse(cacheHit);
+
+      return PrismaQuestionDetailsMapper.toDomain(cashedData);
+    }
+
     const question = await this.prismaService.question.findUnique({
       where: {
         slug,
@@ -60,7 +72,14 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
       return null;
     }
 
-    return PrismaQuestionDetailsMapper.toDomain(question);
+    const questionDetails = PrismaQuestionDetailsMapper.toDomain(question);
+
+    await this.cacheRepository.set(
+      `question:${slug}:details`,
+      JSON.stringify(questionDetails),
+    );
+
+    return questionDetails;
   }
 
   async findById(id: string): Promise<Question | null> {
@@ -109,6 +128,9 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
       this.prismaQuestionAttachmentsRepository.deleteMany(
         question.attachments.getRemovedItems(),
       ),
+
+      // INVALIDANDO O CACHE
+      this.cacheRepository.delete(`question:${data.slug}:details`),
     ]);
 
     DomainEvents.dispatchEventsForAggregate(question.id);
